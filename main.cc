@@ -22,15 +22,14 @@ int main(int argc, char* argv[])
     int maxBounces = 5;
     int numOfSpheres = atoi(argv[4]);
 
-    Display::Window wnd;
+    /*Display::Window wnd;
 
     wnd.SetTitle("TrayRacer");
 
     if (!wnd.Open())
-        return 1;
+        return 1;*/
 
     std::vector<Color> framebuffer;
-
     framebuffer.resize(w * h);
 
     Raytracer rt = Raytracer(w, h, framebuffer, raysPerPixel, maxBounces);
@@ -65,14 +64,14 @@ int main(int argc, char* argv[])
         rt.AddObject(ground);
     }
 
-    bool exit = false;
+    /*bool exit = false;*/
 
     // camera
     bool resetFramebuffer = false;
     vec3 camPos = { 0,1.0f,10.0f };
     vec3 moveDir = { 0,0,0 };
 
-    wnd.SetKeyPressFunction([&exit, &moveDir, &resetFramebuffer](int key, int scancode, int action, int mods)
+    /*wnd.SetKeyPressFunction([&exit, &moveDir, &resetFramebuffer](int key, int scancode, int action, int mods)
         {
             switch (key)
             {
@@ -106,14 +105,14 @@ int main(int argc, char* argv[])
             default:
                 break;
             }
-        });
+        });*/
 
     float pitch = 0;
     float yaw = 0;
     float oldx = 0;
     float oldy = 0;
 
-    wnd.SetMouseMoveFunction([&pitch, &yaw, &oldx, &oldy, &resetFramebuffer](double x, double y)
+    /*wnd.SetMouseMoveFunction([&pitch, &yaw, &oldx, &oldy, &resetFramebuffer](double x, double y)
         {
             x *= -0.1;
     y *= -0.1;
@@ -122,7 +121,7 @@ int main(int argc, char* argv[])
     resetFramebuffer |= true;
     oldx = x;
     oldy = y;
-        });
+        });*/
 
     float rotx = 0;
     float roty = 0;
@@ -141,7 +140,7 @@ int main(int argc, char* argv[])
         yaw = 0;
 
         // poll input
-        wnd.Update();
+        /*wnd.Update();*/
 
         rotx -= pitch;
         roty -= yaw;
@@ -185,8 +184,8 @@ int main(int argc, char* argv[])
         glClearColor(0, 0, 0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        wnd.Blit((float*)&framebufferCopy[0], w, h);
-        wnd.SwapBuffers();
+        /*wnd.Blit((float*)&framebufferCopy[0], w, h);
+        wnd.SwapBuffers();*/
     }
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
@@ -199,8 +198,8 @@ int main(int argc, char* argv[])
     float mray_per_sec = total_rays / float(duration.count());
     std::cout << mray_per_sec << " MRays / s" << std::endl;
 
-    if (wnd.IsOpen())
-        wnd.Close();
+    /*if (wnd.IsOpen())
+        wnd.Close();*/
 
     return 0;
 }
