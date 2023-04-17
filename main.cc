@@ -190,7 +190,14 @@ int main(int argc, char* argv[])
     }
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+    // Total time
     std::cout << "Time taken by code: " << duration.count() << " microseconds" << std::endl;
+
+    // MRays / s
+    int total_rays = w * h * raysPerPixel;
+    float mray_per_sec = total_rays / float(duration.count());
+    std::cout << mray_per_sec << " MRays / s" << std::endl;
 
     if (wnd.IsOpen())
         wnd.Close();
