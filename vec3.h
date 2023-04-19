@@ -53,7 +53,7 @@ inline double len(vec3 const& v)
 inline vec3 normalize(vec3 v)
 {
     double l = len(v);
-    if (l == 0) return v;
+    if (len == 0) return v;
     return vec3((v.x / l), (v.y / l), (v.z / l));
 }
 

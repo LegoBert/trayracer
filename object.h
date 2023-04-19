@@ -32,7 +32,10 @@ public:
         this->value = std::make_shared<HitResult>(hit);
     }
 
-    bool HasValue() { return hasValue; }
+    bool HasValue()
+    {
+        return hasValue;
+    }
     HitResult Get()
     {
         assert(this->HasValue());

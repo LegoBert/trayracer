@@ -28,7 +28,7 @@ public:
     }
 };
 
-#define no_gl 1
+#define no_gl 0
 #if no_gl
 int main(int argc, char* argv[])
 {
@@ -96,7 +96,6 @@ int main(int argc, char* argv[])
 
     std::vector<Color> framebufferCopy;
     framebufferCopy.resize(w * h);
-
 
     for (int i = 0; i < 1000; i++) {
         auto start = std::chrono::high_resolution_clock::now();
@@ -171,11 +170,10 @@ int main()
 
     std::vector<Color> framebuffer;
 
-    //const unsigned w = 200;
-    //const unsigned h = 100;
+    /*const unsigned w = 200;
+    const unsigned h = 100;*/
     const unsigned w = 1024;
     const unsigned h = 768;
-
     framebuffer.resize(w * h);
     
     int raysPerPixel = 1;
