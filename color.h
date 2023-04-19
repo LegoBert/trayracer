@@ -27,3 +27,4 @@ struct Color
                 this->b * rhs.b};
     }
 };
+
