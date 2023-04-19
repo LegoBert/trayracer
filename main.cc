@@ -171,8 +171,8 @@ int main()
 
     std::vector<Color> framebuffer;
 
-    //const unsigned w = 200;
-    //const unsigned h = 100;
+    /*const unsigned w = 100;
+    const unsigned h = 100;*/
     const unsigned w = 1024;
     const unsigned h = 768;
 

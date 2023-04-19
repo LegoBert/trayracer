@@ -65,6 +65,9 @@ public:
 
 private:
     std::vector<Object*> objects;
+    const float invWidth;
+    const float invHeight;
+    const float invRpp;
 };
 
 inline void Raytracer::AddObject(Object* o)

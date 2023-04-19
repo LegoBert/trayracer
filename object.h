@@ -33,6 +33,7 @@ public:
     }
 
     bool HasValue() { return hasValue; }
+
     HitResult Get()
     {
         assert(this->HasValue());
