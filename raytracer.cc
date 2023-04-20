@@ -8,7 +8,10 @@ Raytracer::Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, un
     rpp(rpp),
     bounces(bounces),
     width(w),
-    height(h)
+    height(h),
+    invWidth(1.0f / this->width),
+    invHeight(1.0f / this->height),
+    invRpp(1.0f / this->rpp)
 {}
 
 //------------------------------------------------------------------------------
@@ -18,10 +21,6 @@ void Raytracer::Raytrace()
     static int leet = 1337;
     std::mt19937 generator(leet++);
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
-
-    float invWidth = 1.0f / this->width;
-    float invHeight = 1.0f / this->height;
-    float invRpp = 1.0f / this->rpp;
 
     for (int x = 0; x < this->width; ++x)
     {

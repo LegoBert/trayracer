@@ -61,9 +61,11 @@ public:
     mat4 view;
     // Go from canonical to view frustum
     mat4 frustum;
-
 private:
     std::vector<Object*> objects;
+    float invWidth;
+    float invHeight;
+    float invRpp;
 };
 
 inline void Raytracer::AddObject(Object* o)
