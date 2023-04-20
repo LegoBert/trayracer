@@ -171,8 +171,8 @@ int main()
 
     std::vector<Color> framebuffer;
 
-    const unsigned w = 1024;
-    const unsigned h = 768;
+    const unsigned w = 1024/4;
+    const unsigned h = 768/4;
 
     framebuffer.resize(w * h);
     
