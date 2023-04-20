@@ -65,7 +65,7 @@ public:
                 vec3 p = ray.PointAt(temp);
                 hit.hitPoint = p;
                 hit.normal = (p - this->center) * (1.0f / this->radius);
-                hit.t = temp;
+                hit.hitDst = temp;
                 hit.object = this;
                 return true;
             }
@@ -74,23 +74,13 @@ public:
                 vec3 p = ray.PointAt(temp2);
                 hit.hitPoint = p;
                 hit.normal = (p - this->center) * (1.0f / this->radius);
-                hit.t = temp2;
+                hit.hitDst = temp2;
                 hit.object = this;
                 return true;
             }
         }
 
         return false;
-    }
-
-    bool hit_sphere(Ray& r) override
-    {
-        vec3 oc = r.origin - center;
-        float a = dot(r.dir, r.dir);
-        float b = 2.0 * dot(oc, r.dir);
-        float c = dot(oc, oc) - radius * radius;
-        float discriminant = b * b - 4 * a * c;
-        return (discriminant > 0);
     }
 
     Ray ScatterRay(Ray ray, vec3 point, vec3 normal) override

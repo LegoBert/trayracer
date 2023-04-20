@@ -36,51 +36,63 @@ void Raytracer::Raytrace()
                 vec3 direction = vec3(u, v, -1.0f);
                 direction = transform(direction, this->frustum);
 
-                Ray ray(get_position(this->view), direction);
-                color += this->TracePath(ray, 0);
+                /*Ray ray(get_position(this->view), direction);
+                color += this->TracePath(ray, 0);*/
+                color += PerPixel(direction);
             }
 
             // divide by number of samples per pixel, to get the average of the distribution
             color *= invRpp;
 
-            this->frameBuffer[y * this->width + x] += color;
+            this->frameBuffer[y * this->width + x] = color;
         }
     }
 
 }
 
-void Raytracer::PerPixel(uint32_t x, uint32_t y, vec3 direction)
+//------------------------------------------------------------------------------
+
+Color Raytracer::PerPixel(vec3 direction)
 {
     Ray ray(origin, direction);
     Color color;
+    float multiplier = 1.0f;
+
     for (int i = 0; i < this->bounces; i++)
     {
-        //Renderer::HitPayload payload = TraceRay(ray);
-        //if (payload.HitDistance < 0.0f)
-        //{
-        //    glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
-        //    color += skyColor * multiplier;
-        //    break;
-        //}
+        HitResult hit = TraceRay(ray);
+        if (hit.hitDst < 0.0f || hit.object == nullptr)
+        {
+            color += Skybox(ray.dir);
+            break;
+        }
 
-        //glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, -1));
-        //float lightIntensity = glm::max(glm::dot(payload.WorldNormal, -lightDir), 0.0f); // == cos(angle)
+        color += hit.object->GetColor();
 
-        //const Sphere& sphere = m_ActiveScene->Spheres[payload.ObjectIndex];
-        //const Material& material = m_ActiveScene->Materials[sphere.MaterialIndex];
+        ray.origin = hit.hitPoint;
+        ray.dir = hit.normal;
+    }
+    return color;
+}
 
-        //glm::vec3 sphereColor = material.Albedo;
-        //sphereColor *= lightIntensity;
-        //color += sphereColor * multiplier;
+//------------------------------------------------------------------------------
 
-        //multiplier *= 0.5f;
-
-        //ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
-        //ray.Direction = glm::reflect(ray.Direction,
-        //    payload.WorldNormal + material.Roughness * Walnut::Random::Vec3(-0.5f, 0.5f));
+HitResult Raytracer::TraceRay(Ray& ray) {
+    HitResult closestHit;
+    HitResult hit;
+    for (Object* object : this->objects)
+    {
+        if (object->Intersect(ray, closestHit.hitDst, hit))
+        {
+            if (hit.hitDst < closestHit.hitDst)
+            {
+                closestHit = hit;
+                closestHit.object = object;
+            }
+        }
     }
 
-    //return glm::vec4(color, 1.0f);
+    return closestHit;
 }
 
 //------------------------------------------------------------------------------
@@ -118,9 +130,9 @@ bool Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitOb
     for (Object* object : this->objects)
     {
         //if (object->hit_sphere(ray))
-        if (object->Intersect(ray, closestHit.t, hit))
+        if (object->Intersect(ray, closestHit.hitDst, hit))
         {
-            if (hit.t < closestHit.t)
+            if (hit.hitDst < closestHit.hitDst)
             {
                 closestHit = hit;
                 closestHit.object = object;
@@ -132,7 +144,7 @@ bool Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitOb
     hitPoint = closestHit.hitPoint;
     hitNormal = closestHit.normal;
     hitObject = closestHit.object;
-    distance = closestHit.t;
+    distance = closestHit.hitDst;
 
     return isHit;
 }
