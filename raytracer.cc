@@ -64,10 +64,13 @@ Color Raytracer::PerPixel(vec3 direction)
         if (hit.hitDst < 0.0f || hit.object == nullptr)
         {
             color += Skybox(ray.dir);
+            color *= multiplier;
             break;
         }
 
         color += hit.object->GetColor();
+        color *= multiplier;
+        multiplier *= 0.5f;
 
         ray.origin = hit.hitPoint;
         ray.dir = hit.normal;
