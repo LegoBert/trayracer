@@ -35,7 +35,7 @@ void Raytracer::Raytrace()
                 vec3 direction = vec3(u, v, -1.0f);
                 direction = transform(direction, this->frustum);
 
-                color += PerPixel(direction);
+                color += TracePath(direction);
             }
 
             // divide by number of samples per pixel, to get the average of the distribution
@@ -49,7 +49,7 @@ void Raytracer::Raytrace()
 
 //------------------------------------------------------------------------------
 
-Color Raytracer::PerPixel(vec3 direction)
+Color Raytracer::TracePath(vec3 direction)
 {
     Ray ray(origin, direction);
     Color color;
@@ -57,7 +57,7 @@ Color Raytracer::PerPixel(vec3 direction)
 
     for (int i = 0; i < this->bounces; i++)
     {
-        HitResult hit = TraceRay(ray);
+        HitResult hit = Raycast(ray);
         if (hit.hitDst < 0.0f || hit.object == nullptr)
         {
             color += Skybox(ray.dir);
@@ -77,7 +77,7 @@ Color Raytracer::PerPixel(vec3 direction)
 
 //------------------------------------------------------------------------------
 
-HitResult Raytracer::TraceRay(Ray& ray) {
+HitResult Raytracer::Raycast(Ray& ray) {
     HitResult closestHit;
     HitResult hit;
     for (Object* object : this->objects)
@@ -94,61 +94,6 @@ HitResult Raytracer::TraceRay(Ray& ray) {
 
     return closestHit;
 }
-
-//------------------------------------------------------------------------------
-
-Color Raytracer::TracePath(Ray ray, unsigned n)
-{
-    vec3 hitPoint;
-    vec3 hitNormal;
-    Object* hitObject = nullptr;
-    float distance = FLT_MAX;
-
-    if (Raycast(ray, hitPoint, hitNormal, hitObject, distance))
-    {
-        Ray scatteredRay = Ray(hitObject->ScatterRay(ray, hitPoint, hitNormal));
-        if (n < this->bounces)
-        {
-            return hitObject->GetColor() * this->TracePath(scatteredRay, n + 1);
-        }
-        else
-        {
-            return { 0, 0, 0 };
-        }
-    }
-
-    return this->Skybox(ray.dir);
-}
-
-//------------------------------------------------------------------------------
-
-bool Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance)
-{
-    bool isHit = false;
-    HitResult closestHit;
-    HitResult hit;
-    for (Object* object : this->objects)
-    {
-        //if (object->hit_sphere(ray))
-        if (object->Intersect(ray, closestHit.hitDst, hit))
-        {
-            if (hit.hitDst < closestHit.hitDst)
-            {
-                closestHit = hit;
-                closestHit.object = object;
-                isHit = true;
-            }
-        }
-    }
-
-    hitPoint = closestHit.hitPoint;
-    hitNormal = closestHit.normal;
-    hitObject = closestHit.object;
-    distance = closestHit.hitDst;
-
-    return isHit;
-}
-
 
 //------------------------------------------------------------------------------
 

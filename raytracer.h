@@ -18,15 +18,11 @@ public:
     // start raytracing!
     void Raytrace();
 
-    Color PerPixel(vec3 direction);
-
-    HitResult TraceRay(Ray& ray);
-
     // add object to scene
     void AddObject(Object* obj);
 
     // single raycast, find object
-    bool Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance);
+    HitResult Raycast(Ray& ray);
 
     // set camera matrix
     void SetViewMatrix(mat4 val);
@@ -39,7 +35,7 @@ public:
 
     // trace a path and return intersection color
     // n is bounce depth
-    Color TracePath(Ray ray, unsigned n);
+    Color TracePath(vec3 direction);
 
     // get the color of the skybox in a direction
     Color Skybox(vec3 direction);
