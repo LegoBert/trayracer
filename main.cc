@@ -28,7 +28,7 @@ public:
     }
 };
 
-#define no_gl 1
+#define no_gl 0
 #if no_gl
 int main(int argc, char* argv[])
 {

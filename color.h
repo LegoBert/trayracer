@@ -26,5 +26,13 @@ struct Color
                 this->g * rhs.g,
                 this->b * rhs.b};
     }
+
+    Color& operator*=(float scalar)
+    {
+        this->r *= scalar;
+        this->g *= scalar;
+        this->b *= scalar;
+        return *this;
+    }
 };
 

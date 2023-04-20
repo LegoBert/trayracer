@@ -8,8 +8,7 @@
 class Object;
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 struct HitResult
 {
     // hit point
@@ -46,8 +45,7 @@ private:
 };
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 class Object
 {
 public:
@@ -55,35 +53,12 @@ public:
     {
         static unsigned long long idCounter = 0;
         id = idCounter++;
-        // Reserve characters for naming this object something!
-        name = new char[256];
-        name[0] = 'U';
-        name[1] = 'n';
-        name[2] = 'n';
-        name[3] = 'a';
-        name[4] = 'm';
-        name[5] = 'e';
-        name[6] = 'd';
-        name[7] = '\0';
-
-        purpose = std::string("I don't have a purpose at the moment, but hopefully the programmer that overrides me will give me one. :)");
     }
-
-    virtual ~Object()
-    {
-        // clean up name!
-        delete name;
-    }
-
+    virtual ~Object() {}
     virtual Optional<HitResult> Intersect(Ray ray, float maxDist) { return {}; };
     virtual Color GetColor() = 0;
     virtual Ray ScatterRay(Ray ray, vec3 point, vec3 normal) { return Ray({ 0,0,0 }, {1,1,1}); };
-    std::string GetName() { return std::string((const char*)name); }
     unsigned long long GetId() { return this->id; }
-
 private:
-    volatile bool isBigObject = false;
-    volatile char* name;
     unsigned long long id;
-    std::string purpose;
 };

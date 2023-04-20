@@ -2,8 +2,7 @@
 #include <random>
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 Raytracer::Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, unsigned rpp, unsigned bounces) :
     frameBuffer(frameBuffer),
     rpp(rpp),
@@ -13,10 +12,8 @@ Raytracer::Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, un
 {}
 
 //------------------------------------------------------------------------------
-/**
-*/
-void
-Raytracer::Raytrace()
+
+void Raytracer::Raytrace()
 {
     static int leet = 1337;
     std::mt19937 generator(leet++);
@@ -24,6 +21,7 @@ Raytracer::Raytrace()
 
     float invWidth = 1.0f / this->width;
     float invHeight = 1.0f / this->height;
+    float invRpp = 1.0f / this->rpp;
 
     for (int x = 0; x < this->width; ++x)
     {
@@ -43,9 +41,7 @@ Raytracer::Raytrace()
             }
 
             // divide by number of samples per pixel, to get the average of the distribution
-            color.r /= this->rpp;
-            color.g /= this->rpp;
-            color.b /= this->rpp;
+            color *= invRpp;
 
             this->frameBuffer[y * this->width + x] += color;
         }
@@ -54,11 +50,8 @@ Raytracer::Raytrace()
 }
 
 //------------------------------------------------------------------------------
-/**
- * @parameter n - the current bounce level
-*/
-Color
-Raytracer::TracePath(Ray ray, unsigned n)
+
+Color Raytracer::TracePath(Ray ray, unsigned n)
 {
     vec3 hitPoint;
     vec3 hitNormal;
@@ -82,8 +75,7 @@ Raytracer::TracePath(Ray ray, unsigned n)
 }
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 bool Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance)
 {
     bool isHit = false;
@@ -114,10 +106,8 @@ bool Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitOb
 
 
 //------------------------------------------------------------------------------
-/**
-*/
-void
-Raytracer::Clear()
+
+void Raytracer::Clear()
 {
     for (auto& color : this->frameBuffer)
     {
@@ -128,10 +118,8 @@ Raytracer::Clear()
 }
 
 //------------------------------------------------------------------------------
-/**
-*/
-void
-Raytracer::UpdateMatrices()
+
+void Raytracer::UpdateMatrices()
 {
     mat4 inverseView = inverse(this->view);
     mat4 basis = transpose(inverseView);
@@ -139,10 +127,8 @@ Raytracer::UpdateMatrices()
 }
 
 //------------------------------------------------------------------------------
-/**
-*/
-Color
-Raytracer::Skybox(vec3 direction)
+
+Color Raytracer::Skybox(vec3 direction)
 {
     float t = 0.5 * (direction.y + 1.0);
     vec3 vec = vec3(1.0, 1.0, 1.0) * (1.0 - t) + vec3(0.5, 0.7, 1.0) * t;
