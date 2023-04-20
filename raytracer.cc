@@ -32,19 +32,16 @@ void Raytracer::Raytrace()
             {
                 float u = ((float(x + dis(generator)) * invWidth) * 2.0f) - 1.0f;
                 float v = ((float(y + dis(generator)) * invHeight) * 2.0f) - 1.0f;
-
                 vec3 direction = vec3(u, v, -1.0f);
                 direction = transform(direction, this->frustum);
 
-                /*Ray ray(get_position(this->view), direction);
-                color += this->TracePath(ray, 0);*/
                 color += PerPixel(direction);
             }
 
             // divide by number of samples per pixel, to get the average of the distribution
             color *= invRpp;
 
-            this->frameBuffer[y * this->width + x] = color;
+            this->frameBuffer[y * this->width + x] += color;
         }
     }
 

@@ -138,9 +138,7 @@ int main(int argc, char* argv[])
             for (Color const& pixel : framebuffer)
             {
                 framebufferCopy[p] = pixel;
-                framebufferCopy[p].r /= frameIndex;
-                framebufferCopy[p].g /= frameIndex;
-                framebufferCopy[p].b /= frameIndex;
+                framebufferCopy[p] *= (1.0f / frameIndex);
                 p++;
             }
         }
