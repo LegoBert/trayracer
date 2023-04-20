@@ -18,6 +18,8 @@ public:
     // start raytracing!
     void Raytrace();
 
+    void PerPixel(uint32_t x, uint32_t y, vec3 direction);
+
     // add object to scene
     void AddObject(Object* obj);
 

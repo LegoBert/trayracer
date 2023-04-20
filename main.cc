@@ -39,8 +39,8 @@ int main(int argc, char* argv[])
     int w = atoi(argv[1]);
     int h = atoi(argv[2]);
     int raysPerPixel = atoi(argv[3]);
-    int maxBounces = 5;
     int numOfSpheres = atoi(argv[4]);
+    int maxBounces = 5;
 
     // Setting seed
     Random random(123456);
@@ -171,8 +171,6 @@ int main()
 
     std::vector<Color> framebuffer;
 
-    /*const unsigned w = 100;
-    const unsigned h = 100;*/
     const unsigned w = 1024;
     const unsigned h = 768;
 
@@ -362,9 +360,7 @@ int main()
             for (Color const& pixel : framebuffer)
             {
                 framebufferCopy[p] = pixel;
-                framebufferCopy[p].r /= frameIndex;
-                framebufferCopy[p].g /= frameIndex;
-                framebufferCopy[p].b /= frameIndex;
+                framebufferCopy[p] *= (1.0f / frameIndex);
                 p++;
             }
         }

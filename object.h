@@ -11,40 +11,11 @@ class Object;
 
 struct HitResult
 {
-    // hit point
-    vec3 p;
-    // normal
+    vec3 hitPoint;
     vec3 normal;
-    // hit object, or nullptr
     Object* object = nullptr;
-    // intersection distance
     float t = FLT_MAX;
 };
-
-template<class TYPE>
-class Optional
-{
-public:
-    Optional() {}
-    Optional(HitResult hit) : hasValue(true)
-    {
-        this->value = std::make_shared<HitResult>(hit);
-    }
-
-    bool HasValue() { return hasValue; }
-
-    HitResult Get()
-    {
-        assert(this->HasValue());
-        return *value;
-    }
-
-private:
-    bool hasValue = false;
-    std::shared_ptr<HitResult> value = nullptr;
-};
-
-//------------------------------------------------------------------------------
 
 class Object
 {
@@ -55,7 +26,8 @@ public:
         id = idCounter++;
     }
     virtual ~Object() {}
-    virtual Optional<HitResult> Intersect(Ray ray, float maxDist) { return {}; };
+    virtual bool Intersect(Ray ray, float maxDist, HitResult& hit) { return {}; };
+    virtual bool hit_sphere(Ray& r) { return false; };
     virtual Color GetColor() = 0;
     virtual Ray ScatterRay(Ray ray, vec3 point, vec3 normal) { return Ray({ 0,0,0 }, {1,1,1}); };
     unsigned long long GetId() { return this->id; }

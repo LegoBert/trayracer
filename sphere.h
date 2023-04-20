@@ -18,7 +18,6 @@ inline vec3 random_point_on_unit_sphere()
     return normalize(v);
 }
 
-// a spherical object
 class Sphere : public Object
 {
 public:
@@ -30,30 +29,24 @@ public:
         radius(radius),
         center(center),
         material(material)
-    {
+    {}
 
-    }
-
-    ~Sphere() override
-    {
-    
-    }
+    ~Sphere() override {}
 
     Color GetColor()
     {
         return material->color;
     }
 
-    Optional<HitResult> Intersect(Ray ray, float maxDist) override
+    bool Intersect(Ray ray, float maxDist, HitResult& hit) override
     {
-        HitResult hit;
-        vec3 oc = ray.b - this->center;
-        vec3 dir = ray.m;
+        vec3 oc = ray.origin - this->center;
+        vec3 dir = ray.dir;
         float b = dot(oc, dir);
     
         // early out if sphere is "behind" ray
         if (b > 0)
-            return Optional<HitResult>();
+            return false;
 
         float a = dot(dir, dir);
         float c = dot(oc, oc) - this->radius * this->radius;
@@ -70,24 +63,34 @@ public:
             if (temp < maxDist && temp > minDist)
             {
                 vec3 p = ray.PointAt(temp);
-                hit.p = p;
+                hit.hitPoint = p;
                 hit.normal = (p - this->center) * (1.0f / this->radius);
                 hit.t = temp;
                 hit.object = this;
-                return Optional<HitResult>(hit);
+                return true;
             }
             if (temp2 < maxDist && temp2 > minDist)
             {
                 vec3 p = ray.PointAt(temp2);
-                hit.p = p;
+                hit.hitPoint = p;
                 hit.normal = (p - this->center) * (1.0f / this->radius);
                 hit.t = temp2;
                 hit.object = this;
-                return Optional<HitResult>(hit);
+                return true;
             }
         }
 
-        return Optional<HitResult>();
+        return false;
+    }
+
+    bool hit_sphere(Ray& r) override
+    {
+        vec3 oc = r.origin - center;
+        float a = dot(r.dir, r.dir);
+        float b = 2.0 * dot(oc, r.dir);
+        float c = dot(oc, oc) - radius * radius;
+        float discriminant = b * b - 4 * a * c;
+        return (discriminant > 0);
     }
 
     Ray ScatterRay(Ray ray, vec3 point, vec3 normal) override

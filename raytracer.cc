@@ -49,6 +49,40 @@ void Raytracer::Raytrace()
 
 }
 
+void Raytracer::PerPixel(uint32_t x, uint32_t y, vec3 direction)
+{
+    Ray ray(origin, direction);
+    Color color;
+    for (int i = 0; i < this->bounces; i++)
+    {
+        //Renderer::HitPayload payload = TraceRay(ray);
+        //if (payload.HitDistance < 0.0f)
+        //{
+        //    glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
+        //    color += skyColor * multiplier;
+        //    break;
+        //}
+
+        //glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, -1));
+        //float lightIntensity = glm::max(glm::dot(payload.WorldNormal, -lightDir), 0.0f); // == cos(angle)
+
+        //const Sphere& sphere = m_ActiveScene->Spheres[payload.ObjectIndex];
+        //const Material& material = m_ActiveScene->Materials[sphere.MaterialIndex];
+
+        //glm::vec3 sphereColor = material.Albedo;
+        //sphereColor *= lightIntensity;
+        //color += sphereColor * multiplier;
+
+        //multiplier *= 0.5f;
+
+        //ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
+        //ray.Direction = glm::reflect(ray.Direction,
+        //    payload.WorldNormal + material.Roughness * Walnut::Random::Vec3(-0.5f, 0.5f));
+    }
+
+    //return glm::vec4(color, 1.0f);
+}
+
 //------------------------------------------------------------------------------
 
 Color Raytracer::TracePath(Ray ray, unsigned n)
@@ -71,7 +105,7 @@ Color Raytracer::TracePath(Ray ray, unsigned n)
         }
     }
 
-    return this->Skybox(ray.m);
+    return this->Skybox(ray.dir);
 }
 
 //------------------------------------------------------------------------------
@@ -83,10 +117,9 @@ bool Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitOb
     HitResult hit;
     for (Object* object : this->objects)
     {
-        auto opt = object->Intersect(ray, closestHit.t);
-        if (opt.HasValue())
+        //if (object->hit_sphere(ray))
+        if (object->Intersect(ray, closestHit.t, hit))
         {
-            HitResult hit = opt.Get();
             if (hit.t < closestHit.t)
             {
                 closestHit = hit;
@@ -96,7 +129,7 @@ bool Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitOb
         }
     }
 
-    hitPoint = closestHit.p;
+    hitPoint = closestHit.hitPoint;
     hitNormal = closestHit.normal;
     hitObject = closestHit.object;
     distance = closestHit.t;
