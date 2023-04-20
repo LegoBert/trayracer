@@ -2,8 +2,7 @@
 #include <random>
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 Raytracer::Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, unsigned rpp, unsigned bounces) :
     frameBuffer(frameBuffer),
     rpp(rpp),
@@ -13,8 +12,7 @@ Raytracer::Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, un
 {}
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 void
 Raytracer::Raytrace()
 {
@@ -54,23 +52,21 @@ Raytracer::Raytrace()
 }
 
 //------------------------------------------------------------------------------
-/**
- * @parameter n - the current bounce level
-*/
-Color
-Raytracer::TracePath(Ray ray, unsigned n)
-{
-    vec3 hitPoint;
-    vec3 hitNormal;
-    Object* hitObject = nullptr;
-    float distance = FLT_MAX;
+//@parameter n - the current bounce level
 
-    if (Raycast(ray, hitPoint, hitNormal, hitObject, distance))
+Color Raytracer::TracePath(Ray ray, unsigned n)
+{
+    /*vec3 hitpoint;
+    vec3 hitnormal;
+
+    HitResult hitInfo = Raycast(ray);
+    if (hitInfo.didHit)
     {
-        Ray scatteredRay = Ray(hitObject->ScatterRay(ray, hitPoint, hitNormal));
+        ray.origin = hitInfo.hitPoint;
+        ray.dir = hitInfo.normal;
         if (n < this->bounces)
         {
-            return hitObject->GetColor() * this->TracePath(scatteredRay, n + 1);
+            return hitInfo.mat->color * TracePath(ray, n + 1);
         }
         else
         {
@@ -78,44 +74,47 @@ Raytracer::TracePath(Ray ray, unsigned n)
         }
     }
 
-    return this->Skybox(ray.m);
+    return this->Skybox(ray.dir);*/
+
+    Color color;
+    for (int i = 0; i <= this->bounces; i++)
+    {
+        HitResult hitinfo = Raycast(ray);
+        if (hitinfo.didHit)
+        {
+            ray.origin = hitinfo.hitPoint;
+            ray.dir = hitinfo.normal;
+            color = color * hitinfo.mat.color;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return color;
 }
 
 //------------------------------------------------------------------------------
-/**
-*/
-bool Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance)
+
+HitResult Raytracer::Raycast(Ray ray)
 {
-    bool isHit = false;
     HitResult closestHit;
-    HitResult hit;
-    for (Object* object : this->objects)
+
+    for (Object* obj : this->objects)
     {
-        auto opt = object->Intersect(ray, closestHit.t);
-        if (opt.HasValue())
-        {
-            HitResult hit = opt.Get();
-            if (hit.t < closestHit.t)
-            {
-                closestHit = hit;
-                closestHit.object = object;
-                isHit = true;
-            }
+        HitResult hitInfo = obj->Intersect(ray);
+
+        if (hitInfo.didHit && hitInfo.dst < closestHit.dst) {
+            closestHit = hitInfo;
+            closestHit.mat = obj->GetMaterial();
         }
     }
 
-    hitPoint = closestHit.p;
-    hitNormal = closestHit.normal;
-    hitObject = closestHit.object;
-    distance = closestHit.t;
-
-    return isHit;
+    return closestHit;
 }
 
-
 //------------------------------------------------------------------------------
-/**
-*/
+
 void
 Raytracer::Clear()
 {
@@ -128,8 +127,7 @@ Raytracer::Clear()
 }
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 void
 Raytracer::UpdateMatrices()
 {
@@ -139,10 +137,8 @@ Raytracer::UpdateMatrices()
 }
 
 //------------------------------------------------------------------------------
-/**
-*/
-Color
-Raytracer::Skybox(vec3 direction)
+
+Color Raytracer::Skybox(vec3 direction)
 {
     float t = 0.5 * (direction.y + 1.0);
     vec3 vec = vec3(1.0, 1.0, 1.0) * (1.0 - t) + vec3(0.5, 0.7, 1.0) * t;

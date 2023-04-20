@@ -28,7 +28,7 @@ public:
     }
 };
 
-#define no_gl 1
+#define no_gl 0
 #if no_gl
 int main(int argc, char* argv[])
 {
@@ -51,23 +51,23 @@ int main(int argc, char* argv[])
     Raytracer rt = Raytracer(w, h, framebuffer, raysPerPixel, maxBounces);
 
     // Create some objects
-    Material* mat = new Material();
-    mat->type = "Lambertian";
-    mat->color = { 0.5,0.5,0.5 };
-    mat->roughness = 0.3;
+    Material mat;
+    mat.type = "Lambertian";
+    mat.color = { 0.5,0.5,0.5 };
+    mat.roughness = 0.3;
     Sphere* ground = new Sphere(1000, { 0,-1000, -1 }, mat);
     rt.AddObject(ground);
 
     //Creating spheres
     for (int i = 0; i < numOfSpheres; i++)
     {
-        Material* mat = new Material();
-        mat->type = "Lambertian";
+        Material mat2;
+        mat2.type = "Lambertian";
         float r = random.GetFloat();
         float g = random.GetFloat();
         float b = random.GetFloat();
-        mat->color = { r,g,b };
-        mat->roughness = random.GetFloat();
+        mat2.color = { r,g,b };
+        mat2.roughness = random.GetFloat();
         const float span = 10.0f;
         Sphere* ground = new Sphere(
             random.GetFloat() * 0.7f + 0.2f,
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
                 random.GetFloat()* span + 0.2f,
                 random.GetFloat()* span
             },
-            mat);
+            mat2);
         rt.AddObject(ground);
     }
 
@@ -184,23 +184,23 @@ int main()
     Raytracer rt = Raytracer(w, h, framebuffer, raysPerPixel, maxBounces);
 
     // Create some objects
-    Material* mat = new Material();
-    mat->type = "Lambertian";
-    mat->color = { 0.5,0.5,0.5 };
-    mat->roughness = 0.3;
+    Material mat;
+    mat.type = "Lambertian";
+    mat.color = { 0.5,0.5,0.5 };
+    mat.roughness = 0.3;
     Sphere* ground = new Sphere(1000, { 0,-1000, -1 }, mat);
     rt.AddObject(ground);
 
     for (int it = 0; it < 12; it++)
     {
         {
-            Material* mat = new Material();
-            mat->type = "Lambertian";
+            Material mat;
+            mat.type = "Lambertian";
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
-            mat->color = { r,g,b };
-            mat->roughness = random.GetFloat();
+            mat.color = { r,g,b };
+            mat.roughness = random.GetFloat();
             const float span = 10.0f;
             Sphere* ground = new Sphere(
                 random.GetFloat() * 0.7f + 0.2f,
@@ -212,13 +212,13 @@ int main()
                 mat);
             rt.AddObject(ground);
         } {
-            Material* mat = new Material();
-            mat->type = "Conductor";
+            Material mat;
+            mat.type = "Conductor";
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
-            mat->color = { r,g,b };
-            mat->roughness = random.GetFloat();
+            mat.color = { r,g,b };
+            mat.roughness = random.GetFloat();
             const float span = 30.0f;
             Sphere* ground = new Sphere(
                 random.GetFloat() * 0.7f + 0.2f,
@@ -230,14 +230,14 @@ int main()
                 mat);
             rt.AddObject(ground);
         } {
-            Material* mat = new Material();
-            mat->type = "Dielectric";
+            Material mat;
+            mat.type = "Dielectric";
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
-            mat->color = { r,g,b };
-            mat->roughness = random.GetFloat();
-            mat->refractionIndex = 1.65;
+            mat.color = { r,g,b };
+            mat.roughness = random.GetFloat();
+            mat.refractionIndex = 1.65;
             const float span = 25.0f;
             Sphere* ground = new Sphere(
                 random.GetFloat() * 0.7f + 0.2f,

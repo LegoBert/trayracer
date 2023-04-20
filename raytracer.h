@@ -6,6 +6,7 @@
 #include "ray.h"
 #include "object.h"
 #include <float.h>
+#include "sphere.h"
 
 //------------------------------------------------------------------------------
 /**
@@ -23,7 +24,7 @@ public:
     void AddObject(Object* obj);
 
     // single raycast, find object
-    bool Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance);
+    HitResult Raycast(Ray ray);
 
     // set camera matrix
     void SetViewMatrix(mat4 val);

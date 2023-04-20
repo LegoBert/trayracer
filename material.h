@@ -5,11 +5,9 @@
 #include <string>
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 struct Material
 {
-    
     /*
         type can be "Lambertian", "Dielectric" or "Conductor".
         Obviously, "lambertian" materials are dielectric, but we separate them here
@@ -24,7 +22,5 @@ struct Material
 };
 
 //------------------------------------------------------------------------------
-/**
-    Scatter ray against material
-*/
+// Scatter ray against material
 Ray BSDF(Material const* const material, Ray ray, vec3 point, vec3 normal);

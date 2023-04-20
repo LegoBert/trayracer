@@ -18,81 +18,62 @@ inline vec3 random_point_on_unit_sphere()
     return normalize(v);
 }
 
-// a spherical object
 class Sphere : public Object
 {
 public:
     float radius;
     vec3 center;
-    Material const* const material;
+    Material material;
 
-    Sphere(float radius, vec3 center, Material const* const material) : 
+    Sphere(float radius, vec3 center, Material material) : 
         radius(radius),
         center(center),
         material(material)
-    {
+    {}
 
-    }
-
-    ~Sphere() override
-    {
-    
-    }
+    ~Sphere() override {}
 
     Color GetColor()
     {
-        return material->color;
+        return material.color;
     }
 
-    Optional<HitResult> Intersect(Ray ray, float maxDist) override
+    Material GetMaterial() override
     {
-        HitResult hit;
-        vec3 oc = ray.b - this->center;
-        vec3 dir = ray.m;
-        float b = dot(oc, dir);
-    
-        // early out if sphere is "behind" ray
-        if (b > 0)
-            return Optional<HitResult>();
+        return material;
+    }
 
-        float a = dot(dir, dir);
-        float c = dot(oc, oc) - this->radius * this->radius;
-        float discriminant = b * b - a * c;
+    HitResult Intersect(Ray ray) override
+    {
+        HitResult hitInfo = {false, vec3(), vec3(), 0};
+        vec3 offsetRayOrigin = ray.origin - center;
 
-        if (discriminant > 0)
-        {
-            constexpr float minDist = 0.001f;
-            float div = 1.0f / a;
-            float sqrtDisc = sqrt(discriminant);
-            float temp = (-b - sqrtDisc) * div;
-            float temp2 = (-b + sqrtDisc) * div;
+        float a = dot(ray.dir, ray.dir);
+        float b = 2 * dot(offsetRayOrigin, ray.dir);
+        float c = dot(offsetRayOrigin, offsetRayOrigin) - radius * radius;
+        // Quadratic discriminant
+        float discriminant = b * b - 4 * a * c;
 
-            if (temp < maxDist && temp > minDist)
-            {
-                vec3 p = ray.PointAt(temp);
-                hit.p = p;
-                hit.normal = (p - this->center) * (1.0f / this->radius);
-                hit.t = temp;
-                hit.object = this;
-                return Optional<HitResult>(hit);
-            }
-            if (temp2 < maxDist && temp2 > minDist)
-            {
-                vec3 p = ray.PointAt(temp2);
-                hit.p = p;
-                hit.normal = (p - this->center) * (1.0f / this->radius);
-                hit.t = temp2;
-                hit.object = this;
-                return Optional<HitResult>(hit);
+        // No solution when d < 0 (ray misses sphere)
+        if (discriminant >= 0) {
+            // Distance to nearest intersection point (from quadratic formula)
+            float dst = (-b - sqrt(discriminant)) / (2 * a);
+
+            // Ignore intersections that occur behind the ray
+            if (dst >= 0) {
+                hitInfo.didHit = true;
+                hitInfo.dst = dst;
+                hitInfo.hitPoint = ray.origin + ray.dir * dst;
+                hitInfo.normal = normalize(hitInfo.hitPoint - center);
             }
         }
-
-        return Optional<HitResult>();
+        return hitInfo;
     }
 
-    Ray ScatterRay(Ray ray, vec3 point, vec3 normal) override
+
+    /*Ray ScatterRay(Ray ray, vec3 point, vec3 normal) override
     {
         return BSDF(this->material, ray, point, normal);
-    }
+    }*/
 
 };

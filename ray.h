@@ -1,18 +1,13 @@
 #pragma once
 #include "vec3.h"
 
-//------------------------------------------------------------------------------
-/**
-*/
 class Ray
 {
 public:
     Ray(vec3 startpoint, vec3 dir) :
-        b(startpoint),
-        m(dir)
-    {
-
-    }
+        origin(startpoint),
+        dir(dir)
+    {}
 
     ~Ray()
     {
@@ -21,11 +16,11 @@ public:
 
     vec3 PointAt(float t)
     {
-        return {b + m * t};
+        return {origin + dir * t};
     }
 
     // beginning of ray
-    vec3 b;
+    vec3 origin;
     // magnitude and direction of ray
-    vec3 m;
+    vec3 dir;
 };
