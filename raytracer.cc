@@ -1,6 +1,7 @@
 #include "raytracer.h"
 #include <random>
 
+
 //------------------------------------------------------------------------------
 
 Raytracer::Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, unsigned rpp, unsigned bounces) :
@@ -33,7 +34,6 @@ void Raytracer::Raytrace()
                 float v = ((float(y + dis(generator)) * invHeight) * 2.0f) - 1.0f;
                 vec3 direction = vec3(u, v, -1.0f);
                 direction = transform(direction, this->frustum);
-
                 color += TracePath(direction);
             }
 
@@ -53,10 +53,17 @@ Color Raytracer::TracePath(vec3 direction)
     Ray ray(origin, direction);
     Color color;
     float multiplier = 1.0f;
+    HitResult hit;
+    unsigned int s = 123456;
 
     for (int i = 0; i < this->bounces; i++)
     {
-        HitResult hit = Raycast(ray);
+        if(i != 0)
+        {
+            hit.object->Scatter(ray);
+        }
+        hit = Raycast(ray);
+
         if (hit.hitDst < 0.0f || hit.object == nullptr)
         {
             color += Skybox(ray.dir);

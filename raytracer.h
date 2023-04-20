@@ -6,6 +6,8 @@
 #include "ray.h"
 #include "object.h"
 #include <float.h>
+#include "material.h"
+#include "random.h"
 
 //------------------------------------------------------------------------------
 

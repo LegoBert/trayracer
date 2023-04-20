@@ -38,6 +38,11 @@ public:
         return material->color;
     }
 
+    Material const* const GetMaterial()
+    {
+        return this->material;
+    }
+
     bool Intersect(Ray ray, float maxDist, HitResult& hit) override
     {
         vec3 oc = ray.origin - this->center;
@@ -83,9 +88,24 @@ public:
         return false;
     }
 
-    Ray ScatterRay(Ray ray, vec3 point, vec3 normal) override
+    /*void ScatterRay(Ray& ray, vec3& point, vec3& normal) override
     {
-        return BSDF(this->material, ray, point, normal);
+        BSDF(this->material, ray, point, normal);
+    }*/
+
+    void Scatter(Ray& ray) override {
+        Bounce(ray, this->material);
     }
 
+    void Bounce(Ray& ray, Material const* const mat) {
+        if (mat->type != "Dielectric")
+        {
+            float F0 = 0.04f;
+            if (mat->type == "Conductor")
+            {
+                F0 = 0.95f;
+            }
+            ray.dir = mul(ray.dir, normalize(vec3(FastRandom(), FastRandom(), FastRandom()) * F0));
+        }
+    }
 };

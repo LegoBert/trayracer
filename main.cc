@@ -59,25 +59,64 @@ int main(int argc, char* argv[])
     rt.AddObject(ground);
 
     //Creating spheres
-    for (int i = 0; i < numOfSpheres; i++)
+    for (int it = 0; it < numOfSpheres; it++)
     {
-        Material* mat = new Material();
-        mat->type = "Lambertian";
-        float r = random.GetFloat();
-        float g = random.GetFloat();
-        float b = random.GetFloat();
-        mat->color = { r,g,b };
-        mat->roughness = random.GetFloat();
-        const float span = 10.0f;
-        Sphere* ground = new Sphere(
-            random.GetFloat() * 0.7f + 0.2f,
-            {
-                random.GetFloat()* span,
-                random.GetFloat()* span + 0.2f,
-                random.GetFloat()* span
-            },
-            mat);
-        rt.AddObject(ground);
+        {
+            Material* mat = new Material();
+            mat->type = "Lambertian";
+            float r = random.GetFloat();
+            float g = random.GetFloat();
+            float b = random.GetFloat();
+            mat->color = { r,g,b };
+            mat->roughness = random.GetFloat();
+            const float span = 10.0f;
+            Sphere* ground = new Sphere(
+                random.GetFloat() * 0.7f + 0.2f,
+                {
+                    random.GetFloat() * span,
+                    random.GetFloat() * span + 0.2f,
+                    random.GetFloat() * span
+                },
+                mat);
+            rt.AddObject(ground);
+        } {
+            Material* mat = new Material();
+            mat->type = "Conductor";
+            float r = random.GetFloat();
+            float g = random.GetFloat();
+            float b = random.GetFloat();
+            mat->color = { r,g,b };
+            mat->roughness = random.GetFloat();
+            const float span = 30.0f;
+            Sphere* ground = new Sphere(
+                random.GetFloat() * 0.7f + 0.2f,
+                {
+                    random.GetFloat() * span,
+                    random.GetFloat() * span + 0.2f,
+                    random.GetFloat() * span
+                },
+                mat);
+            rt.AddObject(ground);
+        } {
+            Material* mat = new Material();
+            mat->type = "Dielectric";
+            float r = random.GetFloat();
+            float g = random.GetFloat();
+            float b = random.GetFloat();
+            mat->color = { r,g,b };
+            mat->roughness = random.GetFloat();
+            mat->refractionIndex = 1.65;
+            const float span = 25.0f;
+            Sphere* ground = new Sphere(
+                random.GetFloat() * 0.7f + 0.2f,
+                {
+                    random.GetFloat() * span,
+                    random.GetFloat() * span + 0.2f,
+                    random.GetFloat() * span
+                },
+                mat);
+            rt.AddObject(ground);
+        }
     }
 
     // camera
@@ -169,8 +208,8 @@ int main()
 
     std::vector<Color> framebuffer;
 
-    const unsigned w = 1024/4;
-    const unsigned h = 768/4;
+    const unsigned w = 1024;
+    const unsigned h = 768;
 
     framebuffer.resize(w * h);
     

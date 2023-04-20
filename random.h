@@ -1,4 +1,6 @@
 #pragma once
+#include "vec3.h"
+#include <vector>
 
 /// Produces an xorshift128 pseudo random number.
 unsigned FastRandom();

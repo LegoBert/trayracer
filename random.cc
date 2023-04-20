@@ -22,9 +22,7 @@ FastRandom()
 }
 
 //------------------------------------------------------------------------------
-/**
-    Thanks to Nic Werneck (https://xor0110.wordpress.com/2010/09/24/how-to-generate-floating-point-random-numbers-efficiently/)
-*/
+
 float
 RandomFloat()
 {
@@ -38,8 +36,7 @@ RandomFloat()
 }
 
 //------------------------------------------------------------------------------
-/**
-*/
+
 float
 RandomFloatNTP()
 {

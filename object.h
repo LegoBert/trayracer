@@ -28,7 +28,8 @@ public:
     virtual ~Object() {}
     virtual bool Intersect(Ray ray, float maxDist, HitResult& hit) { return {}; };
     virtual Color GetColor() = 0;
-    virtual Ray ScatterRay(Ray ray, vec3 point, vec3 normal) { return Ray({ 0,0,0 }, {1,1,1}); };
+    virtual void Scatter(Ray& ray) = 0;
+    //virtual void ScatterRay(Ray& ray, vec3& point, vec3& normal) {};
     unsigned long long GetId() { return this->id; }
 private:
     unsigned long long id;
