@@ -98,10 +98,10 @@ public:
     }
 
     void Bounce(Ray& ray, Material const* const mat) {
-        if (mat->type != "Dielectric")
+        if (mat->type != Type::Dielectric)
         {
             float F0 = 0.04f;
-            if (mat->type == "Conductor")
+            if (mat->type == Type::Conductor)
             {
                 F0 = 0.95f;
             }

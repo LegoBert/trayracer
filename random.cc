@@ -1,9 +1,7 @@
 #include "random.h"
 
 //------------------------------------------------------------------------------
-/**
-	XorShift128 implementation.
-*/
+
 unsigned
 FastRandom()
 {

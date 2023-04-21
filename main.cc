@@ -5,6 +5,7 @@
 #include "sphere.h"
 #include <iostream>
 #include <chrono>
+#include "material.h"
 
 #define degtorad(angle) angle * MPI / 180
 
@@ -52,7 +53,7 @@ int main(int argc, char* argv[])
 
     // Create some objects
     Material* mat = new Material();
-    mat->type = "Lambertian";
+    mat->type = Type::Lambertian;
     mat->color = { 0.5,0.5,0.5 };
     mat->roughness = 0.3;
     Sphere* ground = new Sphere(1000, { 0,-1000, -1 }, mat);
@@ -63,7 +64,7 @@ int main(int argc, char* argv[])
     {
         {
             Material* mat = new Material();
-            mat->type = "Lambertian";
+            mat->type = Type::Lambertian;
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
@@ -81,7 +82,7 @@ int main(int argc, char* argv[])
             rt.AddObject(ground);
         } {
             Material* mat = new Material();
-            mat->type = "Conductor";
+            mat->type = Type::Conductor;
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
@@ -99,7 +100,7 @@ int main(int argc, char* argv[])
             rt.AddObject(ground);
         } {
             Material* mat = new Material();
-            mat->type = "Dielectric";
+            mat->type = Type::Dielectric;
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
@@ -220,7 +221,7 @@ int main()
 
     // Create some objects
     Material* mat = new Material();
-    mat->type = "Lambertian";
+    mat->type = Type::Lambertian;
     mat->color = { 0.5,0.5,0.5 };
     mat->roughness = 0.3;
     Sphere* ground = new Sphere(1000, { 0,-1000, -1 }, mat);
@@ -230,7 +231,7 @@ int main()
     {
         {
             Material* mat = new Material();
-            mat->type = "Lambertian";
+            mat->type = Type::Lambertian;
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
@@ -248,7 +249,7 @@ int main()
             rt.AddObject(ground);
         } {
             Material* mat = new Material();
-            mat->type = "Conductor";
+            mat->type = Type::Conductor;
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
@@ -266,7 +267,7 @@ int main()
             rt.AddObject(ground);
         } {
             Material* mat = new Material();
-            mat->type = "Dielectric";
+            mat->type = Type::Dielectric;
             float r = random.GetFloat();
             float g = random.GetFloat();
             float b = random.GetFloat();
