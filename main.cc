@@ -29,7 +29,7 @@ public:
     }
 };
 
-#define no_gl 1
+#define no_gl 0
 #if no_gl
 int main(int argc, char* argv[])
 {
@@ -294,7 +294,7 @@ int main()
     vec3 camPos = { 0,1.0f,10.0f };
     vec3 moveDir = { 0,0,0 };
 
-    wnd.SetKeyPressFunction([&exit, &moveDir, &resetFramebuffer](int key, int scancode, int action, int mods)
+    /*wnd.SetKeyPressFunction([&exit, &moveDir, &resetFramebuffer](int key, int scancode, int action, int mods)
     {
         switch (key)
         {
@@ -328,7 +328,7 @@ int main()
         default:
             break;
         }
-    });
+    });*/
 
     float pitch = 0;
     float yaw = 0;
@@ -359,7 +359,7 @@ int main()
     while (wnd.IsOpen() && !exit)
     {
         resetFramebuffer = false;
-        moveDir = {0,0,0};
+        //moveDir = {0,0,0};
         pitch = 0;
         yaw = 0;
 
@@ -369,17 +369,17 @@ int main()
         rotx -= pitch;
         roty -= yaw;
 
-        moveDir = normalize(moveDir);
+        //moveDir = normalize(moveDir);
 
         mat4 xMat = (rotationx(rotx));
         mat4 yMat = (rotationy(roty));
         mat4 cameraTransform = multiply(yMat, xMat);
 
-        camPos = camPos + transform(moveDir * 0.2f, cameraTransform);
+        /*camPos = camPos + transform(moveDir * 0.2f, cameraTransform);
         
         cameraTransform.m30 = camPos.x;
         cameraTransform.m31 = camPos.y;
-        cameraTransform.m32 = camPos.z;
+        cameraTransform.m32 = camPos.z;*/
 
         rt.SetViewMatrix(cameraTransform);
         

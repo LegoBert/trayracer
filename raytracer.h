@@ -1,13 +1,15 @@
 #pragma once
-#include <vector>
 #include "vec3.h"
 #include "mat4.h"
 #include "color.h"
 #include "ray.h"
 #include "object.h"
-#include <float.h>
 #include "material.h"
 #include "random.h"
+#include <float.h>
+#include <vector>
+#include <iostream>
+#include <thread>
 
 //------------------------------------------------------------------------------
 

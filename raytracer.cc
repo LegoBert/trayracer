@@ -19,29 +19,86 @@ Raytracer::Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, un
 
 void Raytracer::Raytrace()
 {
-    static int leet = 1337;
-    std::mt19937 generator(leet++);
+    //static int leet = 1337;
+    //std::mt19937 generator(leet++);
+    //std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+
+    //std::cout << std::thread::hardware_concurrency() << std::endl;
+
+    //for (int x = 0; x < this->width; ++x)
+    //{
+    //    for (int y = 0; y < this->height; ++y)
+    //    {
+    //        Color color;
+    //        for (int i = 0; i < this->rpp; ++i)
+    //        {
+    //            float u = ((float(x + dis(generator)) * invWidth) * 2.0f) - 1.0f;
+    //            float v = ((float(y + dis(generator)) * invHeight) * 2.0f) - 1.0f;
+
+    //            vec3 direction = vec3(u, v, -1.0f);
+    //            direction = transform(direction, this->frustum);
+
+    //            color += TracePath(direction);
+    //        }
+
+    //        // divide by number of samples per pixel, to get the average of the distribution
+    //        color *= invRpp;
+    //        this->frameBuffer[y * this->width + x] += color;
+    //    }
+    //}
+    std::random_device rd;
+    std::mt19937 generator(rd());
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
-    for (int x = 0; x < this->width; ++x)
+    std::vector<std::thread> threads;
+    const int num_threads = std::thread::hardware_concurrency();
+    const int Hthr = height / (num_threads * 4);
+    int tiles_per_thread = 1;  /*= std::max(1, height / (num_threads * 8));*/
+    if (Hthr > 1) {
+        tiles_per_thread = Hthr;
+    }
+    const int tile_size = width * tiles_per_thread;
+    const int num_tiles = (height + tiles_per_thread - 1) / tiles_per_thread;
+
+    for (int t = 0; t < num_threads; ++t)
     {
-        for (int y = 0; y < this->height; ++y)
-        {
-            Color color;
-            for (int i = 0; i < this->rpp; ++i)
+        threads.emplace_back([&, t]() {
+            for (int tile = t; tile < num_tiles; tile += num_threads)
             {
-                float u = ((float(x + dis(generator)) * invWidth) * 2.0f) - 1.0f;
-                float v = ((float(y + dis(generator)) * invHeight) * 2.0f) - 1.0f;
-                vec3 direction = vec3(u, v, -1.0f);
-                direction = transform(direction, this->frustum);
-                color += TracePath(direction);
+                int y_start = tile * tiles_per_thread;
+                int y_end = height; /*std::min(height, y_start + tiles_per_thread);*/
+                if (y_start + tiles_per_thread < height) {
+                    y_end = y_start + tiles_per_thread;
+                }
+
+                for (int x = 0; x < width; ++x)
+                {
+                    for (int y = y_start; y < y_end; ++y)
+                    {
+                        Color color;
+                        for (int i = 0; i < rpp; ++i)
+                        {
+                            float u = ((float(x + dis(generator)) * invWidth) * 2.0f) - 1.0f;
+                            float v = ((float(y + dis(generator)) * invHeight) * 2.0f) - 1.0f;
+
+                            vec3 direction = vec3(u, v, -1.0f);
+                            direction = transform(direction, frustum);
+
+                            color += TracePath(direction);
+                        }
+
+                        // divide by number of samples per pixel, to get the average of the distribution
+                        color *= invRpp;
+                        frameBuffer[y * width + x] += color;
+                    }
+                }
             }
+            });
+    }
 
-            // divide by number of samples per pixel, to get the average of the distribution
-            color *= invRpp;
-
-            this->frameBuffer[y * this->width + x] += color;
-        }
+    for (auto& thread : threads)
+    {
+        thread.join();
     }
 
 }
@@ -54,7 +111,6 @@ Color Raytracer::TracePath(vec3 direction)
     Color color;
     float multiplier = 1.0f;
     HitResult hit;
-    unsigned int s = 123456;
 
     for (int i = 0; i < this->bounces; i++)
     {
