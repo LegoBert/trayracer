@@ -29,7 +29,7 @@ public:
     }
 };
 
-#define no_gl 0
+#define no_gl 1
 #if no_gl
 int main(int argc, char* argv[])
 {
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
                 },
                 mat);
             rt.AddObject(ground);
-        } {
+        } /*{
             Material* mat = new Material();
             mat->type = Type::Conductor;
             float r = random.GetFloat();
@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
                 },
                 mat);
             rt.AddObject(ground);
-        }
+        }*/
     }
 
     // camera
@@ -137,8 +137,9 @@ int main(int argc, char* argv[])
     std::vector<Color> framebufferCopy;
     framebufferCopy.resize(w * h);
 
-
-    for (int i = 0; i < 1000; i++) {
+    float avgtime = 0;
+    float avgray = 0;
+    for (int i = 0; i < 5; i++) {
         auto start = std::chrono::high_resolution_clock::now();
 
         resetFramebuffer = false;
@@ -191,7 +192,11 @@ int main(int argc, char* argv[])
         int total_rays = w * h * raysPerPixel;
         float mray_per_sec = total_rays / float(duration.count());
         std::cout << mray_per_sec << " MRays / s" << std::endl;
+        avgtime += float(duration.count());
+        avgray += mray_per_sec;
     }
+    std::cout << avgtime / 5 << std::endl;
+    std::cout << avgray / 5 << std::endl;
 
     return 0;
 }
