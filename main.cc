@@ -97,8 +97,8 @@ int main(int argc, char* argv[])
     std::vector<Color> framebufferCopy;
     framebufferCopy.resize(w * h);
 
-    auto start = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 5; i++) {
+        auto start = std::chrono::high_resolution_clock::now();
         resetFramebuffer = false;
         moveDir = { 0,0,0 };
         pitch = 0;
@@ -142,18 +142,18 @@ int main(int argc, char* argv[])
                 p++;
             }
         }
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
+        // Total time
+        std::cout << "Time taken by code: " << duration.count() << " microseconds" << std::endl;
+
+        // MRays / s
+        int total_rays = w * h * raysPerPixel;
+        float mray_per_sec = total_rays / float(duration.count());
+        std::cout << mray_per_sec << " MRays / s" << std::endl;
     }
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-
-    // Total time
-    std::cout << "Time taken by code: " << duration.count() << " microseconds" << std::endl;
-
-    // MRays / s
-    int total_rays = w * h * raysPerPixel;
-    float mray_per_sec = total_rays / float(duration.count());
-    std::cout << mray_per_sec << " MRays / s" << std::endl;
+    
 
     return 0;
 }
